@@ -22,8 +22,41 @@ using namespace std;
  // if(arr[0]==0) dp[i][j]=0; we can't fill 
     // else dp[i][j]=0 but dp[0][arr[0]]=1;
 
-// final subproblem -> 
+// final subproblem -> dp[n][0]+dp[n][1]+..+dp[n][x];
+int mod=1e9+7;
+bool valid(int x,int m){
+    return x>=1 && x<=m;
+}
 int main()
 {
+    ll n,m;cin>>n>>m;
+    vi a(n);
+    f(i,0,n) cin>>a[i];
+    vector<vector<int>>dp(n+1,vector<int>(m+1));
+    // base case
+    for(int i=1;i<=m;i++){
+        if(a[0]==0 || a[0]==i){
+            dp[1][i]=1;
+        }
+    }
+    
+    for(int i=2;i<=n;i++){
+        for(int j=1;j<=m;j++){
+            if(a[i-1]!=0 && a[i-1]!=j){
+                dp[i][j]=0;continue;
+            }
+            for(int prev=j-1;prev<=j+1;prev++){
+                if(!valid(prev,m)) continue;
+                dp[i][j]=(dp[i][j]+dp[i-1][prev])%mod;
+            }
+        }
+    }
+    int ans=0;
+    for(int i=1;i<=m;i++){
+        ans+=dp[n][i];
+        ans%=mod;
+    }
+    cout<<ans<<en;
+
     return 0;
 }
